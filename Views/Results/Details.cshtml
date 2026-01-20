@@ -1,0 +1,321 @@
+@model OnlineVotingSystem.Models.ViewModels.ResultViewModel
+@{
+    ViewData["Title"] = "Election Results - " + Model.ElectionName;
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-3">Election Results</h2>
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">@Model.ElectionName</h4>
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(Model.ElectionDescription))
+                    {
+                        <p class="text-muted">@Model.ElectionDescription</p>
+                    }
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <p><strong>Start Date:</strong> @Model.StartDate.ToString("MM/dd/yyyy HH:mm")</p>
+                            <p><strong>End Date:</strong> @Model.EndDate.ToString("MM/dd/yyyy HH:mm")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Status:</strong> 
+                                @if (Model.Status == "Active")
+                                {
+                                    <span class="badge bg-success">@Model.Status</span>
+                                }
+                                else if (Model.Status == "Completed")
+                                {
+                                    <span class="badge bg-secondary">@Model.Status</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning">@(Model.Status ?? "Pending")</span>
+                                }
+                            </p>
+                            <p><strong>Total Votes:</strong> <span class="badge bg-info">@Model.TotalVotes</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Candidate Vote Distribution (Pie Chart)</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="pieChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Candidate Vote Count (Bar Chart)</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="barChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Party Vote Distribution (Pie Chart)</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="partyPieChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Party Vote Count (Bar Chart)</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="partyBarChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Detailed Results</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.CandidateResults == null || !Model.CandidateResults.Any())
+                    {
+                        <div class="alert alert-warning">
+                            <p>No candidates found for this election.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Candidate Name</th>
+                                        <th>Party</th>
+                                        <th>Votes</th>
+                                        <th>Percentage</th>
+                                        <th>Progress Bar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        int rank = 1;
+                                    }
+                                    @foreach (var candidate in Model.CandidateResults)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @if (rank == 1)
+                                                {
+                                                    <span class="badge bg-warning text-dark">🥇 1st</span>
+                                                }
+                                                else if (rank == 2)
+                                                {
+                                                    <span class="badge bg-secondary">🥈 2nd</span>
+                                                }
+                                                else if (rank == 3)
+                                                {
+                                                    <span class="badge bg-info">🥉 3rd</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>@rank</span>
+                                                }
+                                            </td>
+                                            <td><strong>@candidate.CandidateName</strong></td>
+                                            <td>@candidate.PartyName</td>
+                                            <td><span class="badge bg-primary">@candidate.VoteCount</span></td>
+                                            <td>@candidate.VotePercentage%</td>
+                                            <td>
+                                                <div class="progress" style="height: 25px;">
+                                                    <div class="progress-bar 
+                                                        @(rank == 1 ? "bg-success" : rank == 2 ? "bg-info" : "bg-secondary")" 
+                                                        role="progressbar" 
+                                                        style="width: @candidate.VotePercentage%" 
+                                                        aria-valuenow="@candidate.VotePercentage" 
+                                                        aria-valuemin="0" 
+                                                        aria-valuemax="100">
+                                                        @candidate.VotePercentage%
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        rank++;
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Party-Wise Results (Overall)</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.PartyResults == null || !Model.PartyResults.Any())
+                    {
+                        <div class="alert alert-warning">
+                            <p>No party results available for this election.</p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Party Name</th>
+                                        <th>Candidates</th>
+                                        <th>Total Votes</th>
+                                        <th>Percentage</th>
+                                        <th>Progress Bar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        int partyRank = 1;
+                                    }
+                                    @foreach (var party in Model.PartyResults)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @if (partyRank == 1)
+                                                {
+                                                    <span class="badge bg-warning text-dark">🥇 1st</span>
+                                                }
+                                                else if (partyRank == 2)
+                                                {
+                                                    <span class="badge bg-secondary">🥈 2nd</span>
+                                                }
+                                                else if (partyRank == 3)
+                                                {
+                                                    <span class="badge bg-info">🥉 3rd</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>@partyRank</span>
+                                                }
+                                            </td>
+                                            <td><strong>@party.PartyName</strong></td>
+                                            <td>
+                                                @if (party.CandidateNames.Any())
+                                                {
+                                                    <small>@string.Join(", ", party.CandidateNames)</small>
+                                                    <br />
+                                                    <span class="badge bg-secondary">@party.CandidateCount candidate(s)</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">No candidates</span>
+                                                }
+                                            </td>
+                                            <td><span class="badge bg-primary">@party.TotalVotes</span></td>
+                                            <td>@party.VotePercentage%</td>
+                                            <td>
+                                                <div class="progress" style="height: 25px;">
+                                                    <div class="progress-bar 
+                                                        @(partyRank == 1 ? "bg-success" : partyRank == 2 ? "bg-info" : "bg-secondary")" 
+                                                        role="progressbar" 
+                                                        style="width: @party.VotePercentage%" 
+                                                        aria-valuenow="@party.VotePercentage" 
+                                                        aria-valuemin="0" 
+                                                        aria-valuemax="100">
+                                                        @party.VotePercentage%
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        partyRank++;
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Results List
+            </a>
+        </div>
+    </div>
+</div>
+
+@{
+    var candidateData = Model.CandidateResults != null
+        ? Model.CandidateResults.Select(c => new
+            {
+                name = c.CandidateName,
+                party = c.PartyName,
+                votes = c.VoteCount,
+                percentage = c.VotePercentage
+            }).ToList<object>()
+        : new List<object>();
+
+    var partyData = Model.PartyResults != null
+        ? Model.PartyResults.Select(p => new
+            {
+                name = p.PartyName,
+                votes = p.TotalVotes,
+                percentage = p.VotePercentage,
+                candidateCount = p.CandidateCount
+            }).ToList<object>()
+        : new List<object>();
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="~/js/results-charts.js"></script>
+    <script>
+        // Pass data from server to JavaScript
+        const electionData = {
+            candidates: @Html.Raw(Json.Serialize(candidateData)),
+            parties: @Html.Raw(Json.Serialize(partyData)),
+            totalVotes: @Model.TotalVotes
+        };
+
+        // Initialize charts when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof initializeCharts === 'function') {
+                initializeCharts(electionData);
+            }
+            if (typeof initializePartyCharts === 'function') {
+                initializePartyCharts(electionData);
+            }
+        });
+    </script>
+}
+

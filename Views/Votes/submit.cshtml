@@ -1,0 +1,27 @@
+﻿@model VoteSubmitModel
+<h2>Vote for @ViewBag.ElectionTitle</h2>
+
+<form method="post">
+    <input type="hidden" asp-for="ElectionId" />
+
+    <label>Voter:</label>
+    <select asp-for="VoterId" required>
+        @foreach (var v in ViewBag.Voters)
+        {
+            <option value="@v.VoterId">@v.Name</option>
+        }
+    </select>
+
+    <label>Candidate:</label>
+    <select asp-for="CandidateId" required>
+        @foreach (var c in ViewBag.Candidates)
+        {
+            <option value="@c.CandidateId">@c.Name</option>
+        }
+    </select>
+
+    <label>Token:</label>
+    <input type="text" asp-for="AuthToken" required />
+
+    <button type="submit">Submit Vote</button>
+</form>

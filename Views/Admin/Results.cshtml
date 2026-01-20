@@ -1,0 +1,17 @@
+﻿@model dynamic
+@{
+    ViewData["Title"] = "Election Results";
+}
+
+<h2>Results</h2>
+
+@foreach (var election in Model)
+{
+    <h3>@election.Election.Title</h3>
+    <ul>
+        @foreach (var candidate in election.Candidates)
+        {
+            <li>@candidate.Name - Votes: @candidate.Votes</li>
+        }
+    </ul>
+}

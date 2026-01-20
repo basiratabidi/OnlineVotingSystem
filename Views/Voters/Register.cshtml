@@ -1,0 +1,265 @@
+﻿@model OnlineVotingSystem.Models.ViewModels.VoterRegisterModel
+@{
+    ViewData["Title"] = "Voter Registration";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm border-0">
+                <!-- Card Header -->
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h3 class="mb-0">
+                        <i class="bi bi-person-plus me-2"></i>Voter Registration
+                    </h3>
+                </div>
+
+                <!-- Card Body -->
+                <div class="card-body p-4">
+                    <!-- Success Message -->
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show mb-4">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            @TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form asp-action="Register" asp-controller="Voters" method="post" id="registrationForm">
+                        @Html.AntiForgeryToken()
+
+                        <!-- Validation Summary -->
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4">
+                            <h6 class="alert-heading mb-2">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                Please fix the following errors:
+                            </h6>
+                        </div>
+
+                        <!-- Name Field -->
+                        <div class="mb-4">
+                            <label asp-for="Name" class="form-label fw-semibold">
+                                <i class="bi bi-person me-1"></i>Full Name
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-person-fill"></i>
+                                </span>
+                                <input asp-for="Name" class="form-control"
+                                       placeholder="Enter your full name"
+                                       autocomplete="name" />
+                            </div>
+                            <span asp-validation-for="Name" class="text-danger small mt-1"></span>
+                        </div>
+
+                        <!-- Email Field -->
+                        <div class="mb-4">
+                            <label asp-for="Email" class="form-label fw-semibold">
+                                <i class="bi bi-envelope me-1"></i>Email Address
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-at"></i>
+                                </span>
+                                <input asp-for="Email" class="form-control"
+                                       type="email"
+                                       placeholder="example@email.com"
+                                       autocomplete="email" />
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger small mt-1"></span>
+                        </div>
+
+                        <!-- Password Field -->
+                        <div class="mb-4">
+                            <label asp-for="Password" class="form-label fw-semibold">
+                                <i class="bi bi-lock me-1"></i>Password
+                            </label>
+                            <div class="input-group">
+                                <input asp-for="Password" class="form-control"
+                                       type="password"
+                                       id="password"
+                                       placeholder="Create a strong password"
+                                       autocomplete="new-password" />
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i class="bi bi-eye" id="toggleIcon"></i>
+                                </button>
+                            </div>
+
+                            <!-- Password Strength Indicator -->
+                            <div class="mt-2">
+                                <div class="progress" style="height: 4px;">
+                                    <div class="progress-bar" id="passwordStrengthBar"
+                                         role="progressbar"
+                                         style="width: 0%"></div>
+                                </div>
+                                <small class="text-muted" id="passwordStrengthText">Password strength</small>
+                            </div>
+
+                            <span asp-validation-for="Password" class="text-danger small mt-1"></span>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg py-2" id="submitBtn">
+                                <i class="bi bi-person-plus me-2"></i>
+                                <span id="submitText">Register</span>
+                                <span id="loadingSpinner" class="spinner-border spinner-border-sm d-none ms-2"></span>
+                            </button>
+                        </div>
+
+                        <!-- Login Link -->
+                        <div class="text-center mt-3">
+                            <p class="text-muted mb-0">
+                                Already have an account?
+                                <a asp-action="Login" asp-controller="Voters" class="text-decoration-none fw-semibold">
+                                    <i class="bi bi-box-arrow-in-right me-1"></i>Login here
+                                </a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Card Footer -->
+                <div class="card-footer bg-light py-3 text-center">
+                    <small class="text-muted">
+                        <i class="bi bi-shield-check me-1"></i>
+                        Your information is secure and encrypted
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Password visibility toggle
+            const togglePasswordBtn = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+
+            if (togglePasswordBtn) {
+                togglePasswordBtn.addEventListener('click', function() {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    toggleIcon.classList.toggle('bi-eye');
+                    toggleIcon.classList.toggle('bi-eye-slash');
+                });
+            }
+
+            // Password strength indicator (UI only, no extra requirements)
+            if (passwordInput) {
+                passwordInput.addEventListener('input', function() {
+                    const password = this.value;
+                    const strengthBar = document.getElementById('passwordStrengthBar');
+                    const strengthText = document.getElementById('passwordStrengthText');
+
+                    let strength = 0;
+
+                    // Simple strength calculation (UI only)
+                    if (password.length > 0) strength = 1;
+                    if (password.length >= 6) strength = 2;
+                    if (password.length >= 8 && /[A-Z]/.test(password)) strength = 3;
+                    if (password.length >= 10 && /[A-Z]/.test(password) && /[0-9]/.test(password)) strength = 4;
+                    if (password.length >= 12 && /[A-Z]/.test(password) && /[0-9]/.test(password) && /[^A-Za-z0-9]/.test(password)) strength = 5;
+
+                    // Update progress bar
+                    const width = strength * 20; // 20% per level
+                    strengthBar.style.width = width + '%';
+
+                    // Update colors and text
+                    switch(strength) {
+                        case 1:
+                            strengthBar.className = 'progress-bar bg-danger';
+                            strengthText.textContent = 'Very Weak';
+                            strengthText.className = 'text-danger small';
+                            break;
+                        case 2:
+                            strengthBar.className = 'progress-bar bg-warning';
+                            strengthText.textContent = 'Weak';
+                            strengthText.className = 'text-warning small';
+                            break;
+                        case 3:
+                            strengthBar.className = 'progress-bar bg-info';
+                            strengthText.textContent = 'Fair';
+                            strengthText.className = 'text-info small';
+                            break;
+                        case 4:
+                            strengthBar.className = 'progress-bar bg-primary';
+                            strengthText.textContent = 'Good';
+                            strengthText.className = 'text-primary small';
+                            break;
+                        case 5:
+                            strengthBar.className = 'progress-bar bg-success';
+                            strengthText.textContent = 'Strong';
+                            strengthText.className = 'text-success small';
+                            break;
+                        default:
+                            strengthBar.className = 'progress-bar bg-secondary';
+                            strengthText.textContent = 'Password strength';
+                            strengthText.className = 'text-muted small';
+                    }
+                });
+            }
+
+            // Form submission loading state
+            const registrationForm = document.getElementById('registrationForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const submitText = document.getElementById('submitText');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+
+            if (registrationForm) {
+                registrationForm.addEventListener('submit', function() {
+                    // Show loading state
+                    submitBtn.disabled = true;
+                    submitText.textContent = 'Registering...';
+                    loadingSpinner.classList.remove('d-none');
+
+                    // Fallback - re-enable after 5 seconds
+                    setTimeout(function() {
+                        submitBtn.disabled = false;
+                        submitText.textContent = 'Register';
+                        loadingSpinner.classList.add('d-none');
+                    }, 5000);
+                });
+            }
+        });
+    </script>
+
+    <style>
+        .card {
+            border-radius: 8px;
+        }
+
+        .card-header {
+            border-bottom: none;
+        }
+
+        .input-group-text {
+            background-color: #f8f9fa;
+        }
+
+        .progress {
+            background-color: #e9ecef;
+        }
+
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+
+        #togglePassword:hover {
+            background-color: #e9ecef;
+        }
+
+        .form-control:focus {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
+    </style>
+}

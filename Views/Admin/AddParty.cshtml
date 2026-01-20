@@ -1,0 +1,74 @@
+@{
+    ViewData["Title"] = "Add Party";
+}
+
+<div class="container py-3">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border shadow-sm">
+                <!-- Header -->
+                <div class="card-header bg-primary text-white py-2">
+                    <h5 class="mb-0">
+                        <i class="bi bi-plus-circle me-2"></i>Add New Party
+                    </h5>
+                </div>
+
+                <!-- Body -->
+                <div class="card-body p-3">
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show py-2 mb-2">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            @TempData["Error"]
+                            <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show py-2 mb-2">
+                            <i class="bi bi-check-circle me-2"></i>
+                            @TempData["Success"]
+                            <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <!-- Election Info -->
+                    <div class="alert alert-light border p-2 mb-3">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-trophy text-primary me-2"></i>
+                            <div>
+                                <p class="mb-0 small fw-medium">Election: @ViewBag.ElectionName</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form -->
+                    <form asp-controller="Admin" asp-action="AddParty" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="electionId" value="@ViewBag.ElectionId" />
+
+                        <div class="mb-3">
+                            <label for="partyName" class="form-label fw-medium small">Party Name</label>
+                            <input type="text"
+                                   class="form-control form-control-sm"
+                                   id="partyName"
+                                   name="partyName"
+                                   placeholder="Enter party name"
+                                   required />
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-sm py-2">
+                                <i class="bi bi-plus-circle me-1"></i>Create Party
+                            </button>
+                            <a asp-action="Parties" asp-route-electionId="@ViewBag.ElectionId" class="btn btn-outline-secondary btn-sm py-2">
+                                <i class="bi bi-arrow-left me-1"></i>Back to Parties
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

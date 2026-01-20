@@ -1,0 +1,158 @@
+﻿@model IEnumerable<OnlineVotingSystem.Models.Entities.Election>
+@{
+    ViewData["Title"] = "Select Election";
+    var allElections = ViewBag.AllElections as IEnumerable<OnlineVotingSystem.Models.Entities.Election>;
+}
+
+<div class="container py-4">
+    <!-- Header -->
+    <div class="text-center mb-4">
+        <h3 class="fw-bold text-primary mb-1">
+            <i class="bi bi-ballot me-2"></i>Select Election
+        </h3>
+        <p class="text-muted small">Choose an election to vote</p>
+    </div>
+
+    <!-- Alerts -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show py-2 mb-3">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["Success"]
+            <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show py-2 mb-3">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @TempData["Error"]
+            <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Elections Grid -->
+    @if (allElections != null && allElections.Any())
+    {
+        <div class="row g-3">
+            @foreach (var election in allElections)
+            {
+                var isActive = election.StartDate <= DateTime.Now && election.EndDate >= DateTime.Now;
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="card border shadow-sm h-100">
+                        <!-- Header -->
+                        <div class="card-header @(isActive ? "bg-success" : election.EndDate < DateTime.Now ? "bg-secondary" : "bg-warning") text-white py-2">
+                            <h6 class="mb-0 fw-medium">@election.Name</h6>
+                        </div>
+
+                        <!-- Body -->
+                        <div class="card-body p-3">
+                            <!-- Description -->
+                            <p class="small text-muted mb-3">
+                                @(!string.IsNullOrEmpty(election.Description) ? election.Description : "No description")
+                            </p>
+
+                            <!-- Dates -->
+                            <div class="small mb-3">
+                                <div class="mb-1">
+                                    <i class="bi bi-calendar3 me-1"></i>
+                                    <strong>Start:</strong> @election.StartDate.ToString("MMM dd, yyyy")
+                                </div>
+                                <div>
+                                    <i class="bi bi-calendar3 me-1"></i>
+                                    <strong>End:</strong> @election.EndDate.ToString("MMM dd, yyyy")
+                                </div>
+                            </div>
+
+                            <!-- Status -->
+                            <div class="mb-3">
+                                @if (isActive)
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle me-1"></i>Active
+                                    </span>
+                                }
+                                else if (election.EndDate < DateTime.Now)
+                                {
+                                    <span class="badge bg-secondary">
+                                        <i class="bi bi-x-circle me-1"></i>Completed
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="bi bi-clock me-1"></i>Upcoming
+                                    </span>
+                                }
+                            </div>
+
+                            <!-- Button -->
+                            <div class="d-grid">
+                                @if (isActive)
+                                {
+                                    <a asp-controller="Votes" asp-action="CastVote" asp-route-electionId="@election.ElectionId"
+                                       class="btn btn-success btn-sm">
+                                        <i class="bi bi-pencil-square me-1"></i>Vote Now
+                                    </a>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-outline-secondary btn-sm" disabled>
+                                        <i class="bi bi-lock me-1"></i>Not Available
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Counter -->
+        <div class="mt-3">
+            <div class="alert alert-light border py-2 small">
+                <i class="bi bi-info-circle me-2"></i>
+                Showing @allElections.Count() election@(allElections.Count() > 1 ? "s" : "")
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- No Elections -->
+        <div class="card border text-center py-4">
+            <div class="card-body">
+                <i class="bi bi-ballot text-muted fs-2 mb-3"></i>
+                <h6 class="fw-bold text-muted mb-2">No Elections</h6>
+                <p class="small text-muted mb-3">Check back later for elections</p>
+                <a asp-controller="Voters" asp-action="Dashboard" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .card {
+        border-radius: 8px;
+    }
+
+    .badge {
+        font-size: 0.75rem;
+    }
+
+    .small {
+        font-size: 0.875rem;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .alert {
+        font-size: 0.875rem;
+    }
+</style>

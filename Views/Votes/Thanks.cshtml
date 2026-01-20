@@ -1,0 +1,54 @@
+﻿@{
+    ViewData["Title"] = "Thank You";
+}
+
+<div class="container vh-100 d-flex justify-content-center align-items-center">
+    <div class="card shadow-lg p-4 text-center" style="max-width: 500px; border-radius: 15px;">
+        <div class="card-body">
+            <div class="mb-4">
+                <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+            </div>
+            <h2 class="card-title mb-3">Thank You!</h2>
+            <p class="card-text mb-4">
+                Your action has been successfully completed.
+                We appreciate your participation.
+            </p>
+
+            <div class="d-grid gap-2">
+                <a asp-action="Dashboard" asp-controller="Voters" class="btn btn-primary btn-lg">
+                    <i class="bi bi-house-door"></i> Go to Dashboard
+                </a>
+                <a asp-action="SelectElection" asp-controller="Voters" class="btn btn-outline-secondary btn-lg">
+                    <i class="bi bi-arrow-left-circle"></i> Back to Elections
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        color: #fff;
+    }
+
+    .card {
+        background-color: #fff;
+        color: #333;
+    }
+
+    .btn-primary {
+        background-color: #2575fc;
+        border-color: #2575fc;
+    }
+
+    .btn-outline-secondary {
+        color: #2575fc;
+        border-color: #2575fc;
+    }
+
+        .btn-outline-secondary:hover {
+            background-color: #2575fc;
+            color: #fff;
+        }
+</style>

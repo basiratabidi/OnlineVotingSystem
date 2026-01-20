@@ -1,0 +1,27 @@
+﻿@model OnlineVotingSystem.Models.Entities.Election
+@{
+    ViewData["Title"] = "Edit Election";
+}
+
+<h2>Edit Election</h2>
+
+<form asp-action="EditElection" method="post">
+    <input type="hidden" asp-for="ElectionId" />
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="StartDate" class="form-label"></label>
+        <input asp-for="StartDate" type="date" class="form-control" />
+        <span asp-validation-for="StartDate" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="EndDate" class="form-label"></label>
+        <input asp-for="EndDate" type="date" class="form-control" />
+        <span asp-validation-for="EndDate" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a asp-action="Elections" class="btn btn-secondary">Cancel</a>
+</form>

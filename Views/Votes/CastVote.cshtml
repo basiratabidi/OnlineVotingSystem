@@ -1,0 +1,87 @@
+﻿@model List<OnlineVotingSystem.Models.Entities.Candidate>
+@{
+    ViewData["Title"] = "Cast Your Vote";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Cast Your Vote</h4>
+                </div>
+                <div class="card-body">
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["Error"]
+                        </div>
+                    }
+                    
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["Success"]
+                        </div>
+                    }
+
+                    <p class="text-muted mb-4">
+                        <strong>Election:</strong> @ViewBag.ElectionName
+                    </p>
+
+                    @if (Model != null && Model.Any())
+                    {
+                        <form asp-action="CastVote" method="post">
+                            <input type="hidden" name="electionId" value="@ViewBag.ElectionId" />
+                            <input type="hidden" name="voteToken" value="@ViewBag.VoteToken" />
+
+                            <h5 class="mb-3">Select a Candidate:</h5>
+                            
+                            <div class="list-group mb-4">
+                                @foreach (var candidate in Model)
+                                {
+                                    <div class="list-group-item">
+                                        <div class="form-check">
+                                            <input class="form-check-input" 
+                                                   type="radio" 
+                                                   name="candidateId" 
+                                                   id="candidate_@candidate.CandidateId"
+                                                   value="@candidate.CandidateId" 
+                                                   required />
+                                            <label class="form-check-label w-100" for="candidate_@candidate.CandidateId">
+                                                <strong>@candidate.Name</strong>
+                                                @if (candidate.Party != null)
+                                                {
+                                                    <span class="badge bg-primary ms-2">@candidate.Party.Name</span>
+                                                }
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    Submit Vote
+                                </button>
+                                <a asp-controller="Voters" asp-action="SelectElection" class="btn btn-secondary">
+                                    Cancel
+                                </a>
+                            </div>
+                        </form>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            <h5>No candidates available</h5>
+                            <p>There are no candidates registered for this election yet.</p>
+                            <a asp-controller="Voters" asp-action="SelectElection" class="btn btn-secondary">
+                                Back to Elections
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

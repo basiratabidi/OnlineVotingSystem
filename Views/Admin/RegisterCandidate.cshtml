@@ -1,0 +1,92 @@
+﻿@{
+    ViewData["Title"] = "Register Candidate";
+    var parties = ViewBag.Parties as IEnumerable<OnlineVotingSystem.Models.Entities.Party>;
+}
+
+<div class="container py-3">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border shadow-sm">
+                <!-- Header -->
+                <div class="card-header bg-info text-white py-2">
+                    <h5 class="mb-0">
+                        <i class="bi bi-person-plus me-2"></i>Register as Candidate
+                    </h5>
+                </div>
+
+                <!-- Body -->
+                <div class="card-body p-3">
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show py-2 mb-2">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            @TempData["Error"]
+                            <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show py-2 mb-2">
+                            <i class="bi bi-check-circle me-2"></i>
+                            @TempData["Success"]
+                            <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <!-- Election Info -->
+                    <div class="alert alert-light border p-2 mb-3">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-trophy text-primary me-2"></i>
+                            <div>
+                                <p class="mb-0 small fw-medium">Election: @ViewBag.ElectionName</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form -->
+                    <form asp-controller="Admin" asp-action="RegisterCandidate" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="electionId" value="@ViewBag.ElectionId" />
+
+                        <div class="mb-3">
+                            <label for="candidateName" class="form-label fw-medium small">Candidate Name</label>
+                            <input type="text"
+                                   class="form-control form-control-sm"
+                                   id="candidateName"
+                                   name="candidateName"
+                                   placeholder="Enter candidate name"
+                                   required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="partyId" class="form-label fw-medium small">Select Party</label>
+                            <select class="form-select form-select-sm"
+                                    id="partyId"
+                                    name="partyId"
+                                    required>
+                                <option value="">-- Select Party --</option>
+                                @if (parties != null)
+                                {
+                                    @foreach (var party in parties)
+                                    {
+                                        <option value="@party.PartyId">@party.Name</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-info btn-sm py-2">
+                                <i class="bi bi-person-check me-1"></i>Register Candidate
+                            </button>
+                            <a asp-action="Elections" class="btn btn-outline-secondary btn-sm py-2">
+                                <i class="bi bi-arrow-left me-1"></i>Back to Elections
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

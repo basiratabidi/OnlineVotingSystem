@@ -1,0 +1,148 @@
+/* =============================
+   COLORS (Voting Theme)
+============================= */
+:root {
+    --bs-primary: #0D6EFD; /* Blue */
+    --bs-secondary: #28A745; /* Green */
+    --bs-success: #28A745;
+    --bs-danger: #DC3545; /* Red */
+    --bs-warning: #FFC107; /* Yellow */
+    --bs-info: #17A2B8; /* Cyan */
+    --bs-light: #F8F9FA; /* Light background */
+    --bs-dark: #212529; /* Dark text */
+}
+
+/* =============================
+   BODY & TYPOGRAPHY
+============================= */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--bs-light);
+    color: var(--bs-dark);
+}
+
+h2, h3, h4, h5, h6 {
+    font-weight: 500;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* =============================
+   NAVBAR
+============================= */
+.navbar {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.navbar-brand {
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+}
+
+/* =============================
+   CARDS
+============================= */
+.card {
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    }
+
+/* =============================
+   TABLES
+============================= */
+.table th, .table td {
+    vertical-align: middle;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: rgba(0,0,0,0.03);
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+/* =============================
+   BUTTONS
+============================= */
+.btn-primary {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+    font-weight: 500;
+}
+
+    .btn-primary:hover {
+        background-color: #0b5ed7;
+        border-color: #0a58ca;
+    }
+
+.btn-success {
+    background-color: var(--bs-success);
+    border-color: var(--bs-success);
+}
+
+    .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+
+.btn-danger {
+    background-color: var(--bs-danger);
+    border-color: var(--bs-danger);
+}
+
+    .btn-danger:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+    }
+
+/* =============================
+   BADGES
+============================= */
+.badge {
+    font-weight: 500;
+    padding: 0.45em 0.65em;
+    font-size: 0.85rem;
+    border-radius: 0.5rem;
+}
+
+/* =============================
+   ALERTS
+============================= */
+.alert {
+    border-radius: 0.5rem;
+    font-weight: 500;
+}
+
+/* =============================
+   DASHBOARD CARDS
+============================= */
+.dashboard-card {
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+    .dashboard-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+
+/* =============================
+   FOOTER
+============================= */
+footer.footer {
+    font-size: 0.9rem;
+    background-color: #f1f3f5;
+}
+
+/* =============================
+   LINKS
+=======================
